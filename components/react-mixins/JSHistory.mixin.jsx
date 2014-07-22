@@ -69,6 +69,10 @@ var HistoryJSMixin = {
       });
     }
 
+    // Support multiple components in History at one time
+    var updated_state = History.getState().data
+    updated_state[this._rootNodeID] = serialized_state[this._rootNodeID]
+
     if (!this.state._historyjs_has_saved) {
       this.setState({ _historyjs_has_saved: true }, function() {
         History.replaceState(serialized_state);
