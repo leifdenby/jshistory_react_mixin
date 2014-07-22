@@ -38,6 +38,23 @@ var HistoryJSMixin = {
       }
     }
   },
+  deserializeState: function(state) {
+      return state[this._rootNodeID]
+  },
+  serializeState: function() {
+      var st = {}
+      st[this._rootNodeID] = {}
+      if(this.saveStates && this.saveStates.length > 0){
+          for(var key in this.state){
+              if(this.saveStates.indexOf(key) !== -1) st[this._rootNodeID][key] = this.state[key]
+          }
+      } else {
+          for(var key in this.state){
+              st[this._rootNodeID][key] = this.state[key]
+          }
+      }
+      return st
+  },
   saveState: function() {
     var serialized_state = null;
     if (this.serializeState !== undefined) {
@@ -51,6 +68,10 @@ var HistoryJSMixin = {
         }
       });
     }
+
+    // Support multiple components in History at one time
+    var updated_state = History.getState().data
+    updated_state[this._rootNodeID] = serialized_state[this._rootNodeID]
 
     if (!this.state._historyjs_has_saved) {
       this.setState({ _historyjs_has_saved: true }, function() {
